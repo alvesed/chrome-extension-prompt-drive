@@ -5,6 +5,13 @@
 const engine = {
   // Initialize application - load seed data
   async initialize() {
+    const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    if (!supabase) {
+      console.warn('Supabase client was not initialized.');
+    } else {
+      this.supabase = supabase;
+    }
+
     stateManager.setState({ ui: { ...stateManager.getState().ui, loading: true } });
 
     try {
