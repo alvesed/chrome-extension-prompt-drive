@@ -205,7 +205,7 @@ const app = {
 
   populateFolderSelect(selector = 'select[name="folderId"]') {
     const state = stateManager.getState();
-    const folders = Object.values(state.data.folders);
+    const folders = state.data.folders;
     
     const selects = document.querySelectorAll(selector);
     selects.forEach(select => {

@@ -32,9 +32,7 @@ const createStateManager = () => {
       currentDeletingFolderId: null
     },
     data: {
-      folders: {},
-      prompts: {},
-      folderPrompts: {}
+      folders: []
     }
   };
 
@@ -67,23 +65,29 @@ const createStateManager = () => {
 
   // Selectors / Derived State
   const getPromptCountTotal = () => {
-    return Object.keys(state.data.prompts).length;
+    return state.data.folders.reduce((total, folder) => {
+      return total + (folder.prompts?.length || 0);
+    }, 0);
   };
 
   const getPromptsByFolder = (folderId) => {
-    const promptIds = state.data.folderPrompts[folderId] || [];
-    return promptIds
-      .map(id => state.data.prompts[id])
-      .filter(Boolean)
-      .sort((a, b) => a.nome.localeCompare(b.nome));
+    const folder = state.data.folders.find(item => item.id === folderId);
+    if (!folder) return [];
+    return [...(folder.prompts || [])].sort((a, b) => a.nome.localeCompare(b.nome));
   };
 
   const getFolderById = (folderId) => {
-    return state.data.folders[folderId] || null;
+    return state.data.folders.find(item => item.id === folderId) || null;
   };
 
   const getPromptById = (promptId) => {
-    return state.data.prompts[promptId] || null;
+    for (const folder of state.data.folders) {
+      const prompt = (folder.prompts || []).find(item => item.id === promptId);
+      if (prompt) {
+        return { ...prompt, folderId: folder.id };
+      }
+    }
+    return null;
   };
 
   const isFreePlan = () => {

@@ -77,7 +77,7 @@ const renderer = {
       return;
     }
 
-    const folders = Object.values(state.data.folders);
+    const folders = state.data.folders;
     
     if (folders.length === 0) {
       container.innerHTML = '<div class="empty-state"><p>Nenhuma pasta encontrada. Crie sua primeira pasta!</p></div>';
@@ -318,7 +318,7 @@ const renderer = {
       while (folderSelect.options.length > 1) {
         folderSelect.remove(1);
       }
-      const folders = Object.values(state.data.folders);
+      const folders = state.data.folders;
       folders.forEach(folder => {
         const option = document.createElement('option');
         option.value = folder.id;

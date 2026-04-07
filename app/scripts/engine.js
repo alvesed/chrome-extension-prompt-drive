@@ -16,28 +16,16 @@ const engine = {
 
     try {
       const seedData = await this.loadSeedData();
-      
-      // Transform seed data to state format
-      const folders = {};
-      const prompts = {};
-      const folderPrompts = {};
-
-      seedData.folders.forEach(folder => {
-        folders[folder.id] = folder;
-        folderPrompts[folder.id] = [];
-      });
-
-      seedData.prompts.forEach(prompt => {
-        prompts[prompt.id] = prompt;
-        if (!folderPrompts[prompt.folderId]) {
-          folderPrompts[prompt.folderId] = [];
-        }
-        folderPrompts[prompt.folderId].push(prompt.id);
-      });
+      const normalized = this.normalizeSeedData(seedData);
+      const state = stateManager.getState();
 
       stateManager.setState({
-        data: { folders, prompts, folderPrompts },
-        ui: { ...stateManager.getState().ui, loading: false, error: null }
+        user: {
+          ...state.user,
+          ...normalized.user
+        },
+        data: { folders: normalized.folders },
+        ui: { ...state.ui, loading: false, error: null }
       });
     } catch (error) {
       console.error('Error initializing:', error);
@@ -72,55 +60,123 @@ const engine = {
 
     // Fallback inline data
     console.warn('Using fallback seed data');
+    return this.getDefaultSeedData();
+  },
+
+  normalizeSeedData(seedData) {
+    const userSource = seedData.user || {};
+    const profile = seedData.profile || {};
+    const subscription = seedData.subscription || {};
+
+    const normalizedUser = {
+      id: userSource.id || generateUUID(),
+      name: userSource.name || 'Usuário',
+      plan: (profile.plan === 'premium' || subscription.status === 'active') ? 'premium' : 'free',
+      stripeCustomerId: profile.stripe_customer_id || null,
+      subscription: {
+        id: subscription.id || null,
+        status: subscription.status || null,
+        periodStart: subscription.period_start || null,
+        periodEnd: subscription.period_end || null,
+        cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end)
+      },
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+
+    const normalizedFolders = (seedData.folders || []).map(folder => ({
+      id: folder.id || generateUUID(),
+      name: folder.name || 'Sem nome',
+      createdAt: this.toTimestamp(folder.createdAt || folder.created_at),
+      updatedAt: this.toTimestamp(folder.updatedAt || folder.updated_at),
+      prompts: (folder.prompts || []).map(prompt => ({
+        id: prompt.id || generateUUID(),
+        nome: prompt.nome || prompt.name || 'Sem nome',
+        conteudo: prompt.conteudo || prompt.content || '',
+        createdAt: this.toTimestamp(prompt.createdAt || prompt.created_at),
+        updatedAt: this.toTimestamp(prompt.updatedAt || prompt.updated_at)
+      }))
+    }));
+
+    (seedData.prompts || []).forEach(prompt => {
+      const folderId = prompt.folderId || prompt.folder_id;
+      const folder = normalizedFolders.find(item => item.id === folderId);
+      if (!folder) return;
+      folder.prompts.push({
+        id: prompt.id || generateUUID(),
+        nome: prompt.nome || prompt.name || 'Sem nome',
+        conteudo: prompt.conteudo || prompt.content || '',
+        createdAt: this.toTimestamp(prompt.createdAt || prompt.created_at),
+        updatedAt: this.toTimestamp(prompt.updatedAt || prompt.updated_at)
+      });
+    });
+
+    return { user: normalizedUser, folders: normalizedFolders };
+  },
+
+  getDefaultSeedData() {
     return {
+      user: { id: generateUUID(), name: 'Usuário Demo' },
+      profile: { stripe_customer_id: null, plan: 'free' },
+      subscription: {
+        id: null,
+        status: 'inactive',
+        period_start: null,
+        period_end: null,
+        cancel_at_period_end: false
+      },
       folders: [
-        { id: "folder-1", name: "Marketing", createdAt: 1704067200000, updatedAt: 1704067200000 },
-        { id: "folder-2", name: "Desenvolvimento", createdAt: 1704153600000, updatedAt: 1704153600000 },
-        { id: "folder-3", name: "Suporte", createdAt: 1704240000000, updatedAt: 1704240000000 }
-      ],
-      prompts: [
         {
-          id: "prompt-1",
-          folderId: "folder-1",
-          nome: "Post para Redes Sociais",
-          conteudo: "Crie um post engajador para [plataforma] sobre [tema]. Inclua uma chamada para ação clara e use uma linguagem [tom].",
-          createdAt: 1704067200000,
-          updatedAt: 1704067200000
-        },
-        {
-          id: "prompt-2",
-          folderId: "folder-1",
-          nome: "Email Marketing",
-          conteudo: "Escreva um email de marketing para promover [produto/serviço]. O email deve ser persuasivo, mas não agressivo, e destacar os principais benefícios.",
-          createdAt: 1704070800000,
-          updatedAt: 1704070800000
-        },
-        {
-          id: "prompt-3",
-          folderId: "folder-2",
-          nome: "Revisão de Código",
-          conteudo: "Revise o seguinte código [código] e forneça feedback sobre: performance, segurança, legibilidade e boas práticas.",
-          createdAt: 1704153600000,
-          updatedAt: 1704153600000
-        },
-        {
-          id: "prompt-4",
-          folderId: "folder-2",
-          nome: "Documentação de API",
-          conteudo: "Crie documentação completa para a API [nome]. Inclua exemplos de requisições, respostas e casos de uso.",
-          createdAt: 1704157200000,
-          updatedAt: 1704157200000
-        },
-        {
-          id: "prompt-5",
-          folderId: "folder-3",
-          nome: "Resposta de Suporte",
-          conteudo: "Crie uma resposta profissional e empática para o seguinte problema do cliente: [descrição do problema]. A resposta deve ser clara e oferecer uma solução.",
-          createdAt: 1704240000000,
-          updatedAt: 1704240000000
+          id: 'folder-1',
+          name: 'Marketing',
+          created_at: '2026-01-01T00:00:00.000Z',
+          updated_at: '2026-01-01T00:00:00.000Z',
+          prompts: [
+            {
+              id: 'prompt-1',
+              name: 'Post para Redes Sociais',
+              content: 'Crie um post engajador para [plataforma] sobre [tema].',
+              created_at: '2026-01-01T00:00:00.000Z',
+              updated_at: '2026-01-01T00:00:00.000Z'
+            }
+          ]
         }
       ]
     };
+  },
+
+  toTimestamp(value) {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') return Date.parse(value) || Date.now();
+    return Date.now();
+  },
+
+  normalizeImportPayload(importData) {
+    if (importData.folder && Array.isArray(importData.prompts)) {
+      return importData;
+    }
+
+    if (Array.isArray(importData.folders) && importData.folders.length > 0) {
+      const firstFolder = importData.folders[0];
+      return {
+        folder: firstFolder,
+        prompts: firstFolder.prompts || []
+      };
+    }
+
+    throw new Error('Formato inválido: esperado { folder: {...}, prompts: [...] } ou { folders: [...] }');
+  },
+
+  findFolderIndexById(folders, folderId) {
+    return folders.findIndex(folder => folder.id === folderId);
+  },
+
+  findPromptLocationById(folders, promptId) {
+    for (let folderIndex = 0; folderIndex < folders.length; folderIndex++) {
+      const promptIndex = (folders[folderIndex].prompts || []).findIndex(prompt => prompt.id === promptId);
+      if (promptIndex > -1) return { folderIndex, promptIndex };
+    }
+    return null;
   },
 
   // Create folder
@@ -145,8 +201,7 @@ const engine = {
     stateManager.setState({
       data: {
         ...state.data,
-        folders: { ...state.data.folders, [folderId]: newFolder },
-        folderPrompts: { ...state.data.folderPrompts, [folderId]: [] }
+        folders: [...state.data.folders, { ...newFolder, prompts: [] }]
       }
     });
 
@@ -170,7 +225,8 @@ const engine = {
     }
 
     const state = stateManager.getState();
-    const folder = state.data.folders[folderId];
+    const folderIndex = this.findFolderIndexById(state.data.folders, folderId);
+    const folder = folderIndex > -1 ? state.data.folders[folderIndex] : null;
     if (!folder) {
       this.showToast(TOAST_MESSAGES.folderError);
       return { success: false, error: 'Pasta não encontrada' };
@@ -182,11 +238,10 @@ const engine = {
       updatedAt: Date.now()
     };
 
+    const folders = [...state.data.folders];
+    folders[folderIndex] = { ...folders[folderIndex], ...updatedFolder };
     stateManager.setState({
-      data: {
-        ...state.data,
-        folders: { ...state.data.folders, [folderId]: updatedFolder }
-      }
+      data: { ...state.data, folders }
     });
 
     api.updateFolder({
@@ -203,7 +258,8 @@ const engine = {
   // Delete folder
   handleDeleteFolder(folderId, confirmName) {
     const state = stateManager.getState();
-    const folder = state.data.folders[folderId];
+    const folderIndex = this.findFolderIndexById(state.data.folders, folderId);
+    const folder = folderIndex > -1 ? state.data.folders[folderIndex] : null;
     if (!folder) {
       this.showToast(TOAST_MESSAGES.folderDeleteError);
       return { success: false, error: 'Pasta não encontrada' };
@@ -214,26 +270,8 @@ const engine = {
       return { success: false, error: TOAST_MESSAGES.folderNameMismatch };
     }
 
-    // Remove folder and all its prompts
-    const newFolders = { ...state.data.folders };
-    delete newFolders[folderId];
-
-    const newPrompts = { ...state.data.prompts };
-    const promptIds = state.data.folderPrompts[folderId] || [];
-    promptIds.forEach(promptId => {
-      delete newPrompts[promptId];
-    });
-
-    const newFolderPrompts = { ...state.data.folderPrompts };
-    delete newFolderPrompts[folderId];
-
-    stateManager.setState({
-      data: {
-        folders: newFolders,
-        prompts: newPrompts,
-        folderPrompts: newFolderPrompts
-      }
-    });
+    const folders = state.data.folders.filter(item => item.id !== folderId);
+    stateManager.setState({ data: { ...state.data, folders } });
 
     api.deleteFolder({
       userId: state.user.id,
@@ -270,31 +308,29 @@ const engine = {
 
     const newPrompt = {
       id: promptId,
-      folderId,
       nome: nome.trim(),
       conteudo: conteudo.trim(),
       createdAt: now,
       updatedAt: now
     };
 
-    const newPrompts = { ...state.data.prompts, [promptId]: newPrompt };
-    const newFolderPrompts = { ...state.data.folderPrompts };
-    if (!newFolderPrompts[folderId]) {
-      newFolderPrompts[folderId] = [];
+    const folderIndex = this.findFolderIndexById(state.data.folders, folderId);
+    if (folderIndex < 0) {
+      this.showToast(TOAST_MESSAGES.promptError);
+      return { success: false, error: 'Pasta não encontrada' };
     }
-    newFolderPrompts[folderId] = [...newFolderPrompts[folderId], promptId];
 
-    stateManager.setState({
-      data: {
-        ...state.data,
-        prompts: newPrompts,
-        folderPrompts: newFolderPrompts
-      }
-    });
+    const folders = [...state.data.folders];
+    folders[folderIndex] = {
+      ...folders[folderIndex],
+      prompts: [...(folders[folderIndex].prompts || []), newPrompt]
+    };
+
+    stateManager.setState({ data: { ...state.data, folders } });
 
     api.createPrompt({
       userId: state.user.id,
-      prompt: newPrompt
+      prompt: { ...newPrompt, folderId }
     });
 
     this.showToast(TOAST_MESSAGES.promptCreated);
@@ -316,46 +352,35 @@ const engine = {
     }
 
     const state = stateManager.getState();
-    const prompt = state.data.prompts[promptId];
-    if (!prompt) {
+    const location = this.findPromptLocationById(state.data.folders, promptId);
+    if (!location) {
       this.showToast(TOAST_MESSAGES.promptError);
       return { success: false, error: 'Prompt não encontrado' };
     }
-
-    const oldFolderId = prompt.folderId;
+    const prompt = state.data.folders[location.folderIndex].prompts[location.promptIndex];
     const updatedPrompt = {
       ...prompt,
-      folderId,
       nome: nome.trim(),
       conteudo: conteudo.trim(),
       updatedAt: Date.now()
     };
 
-    const newPrompts = { ...state.data.prompts, [promptId]: updatedPrompt };
-    const newFolderPrompts = { ...state.data.folderPrompts };
-
-    // If folder changed, move prompt
-    if (oldFolderId !== folderId) {
-      newFolderPrompts[oldFolderId] = newFolderPrompts[oldFolderId].filter(id => id !== promptId);
-      if (!newFolderPrompts[folderId]) {
-        newFolderPrompts[folderId] = [];
-      }
-      newFolderPrompts[folderId].push(promptId);
+    const targetFolderIndex = this.findFolderIndexById(state.data.folders, folderId);
+    if (targetFolderIndex < 0) {
+      this.showToast(TOAST_MESSAGES.promptError);
+      return { success: false, error: 'Pasta não encontrada' };
     }
 
-    stateManager.setState({
-      data: {
-        ...state.data,
-        prompts: newPrompts,
-        folderPrompts: newFolderPrompts
-      }
-    });
+    const folders = state.data.folders.map(folder => ({ ...folder, prompts: [...(folder.prompts || [])] }));
+    folders[location.folderIndex].prompts.splice(location.promptIndex, 1);
+    folders[targetFolderIndex].prompts.push(updatedPrompt);
+    stateManager.setState({ data: { ...state.data, folders } });
 
     api.updatePrompt({
       userId: state.user.id,
       promptId,
       patch: {
-        folderId: updatedPrompt.folderId,
+        folderId,
         nome: updatedPrompt.nome,
         conteudo: updatedPrompt.conteudo
       }
@@ -369,25 +394,16 @@ const engine = {
   // Delete prompt
   handleDeletePrompt(promptId) {
     const state = stateManager.getState();
-    const prompt = state.data.prompts[promptId];
-    if (!prompt) {
+    const location = this.findPromptLocationById(state.data.folders, promptId);
+    if (!location) {
       this.showToast(TOAST_MESSAGES.promptError);
       return { success: false, error: 'Prompt não encontrado' };
     }
+    const prompt = state.data.folders[location.folderIndex].prompts[location.promptIndex];
 
-    const newPrompts = { ...state.data.prompts };
-    delete newPrompts[promptId];
-
-    const newFolderPrompts = { ...state.data.folderPrompts };
-    newFolderPrompts[prompt.folderId] = newFolderPrompts[prompt.folderId].filter(id => id !== promptId);
-
-    stateManager.setState({
-      data: {
-        ...state.data,
-        prompts: newPrompts,
-        folderPrompts: newFolderPrompts
-      }
-    });
+    const folders = state.data.folders.map(folder => ({ ...folder, prompts: [...(folder.prompts || [])] }));
+    folders[location.folderIndex].prompts.splice(location.promptIndex, 1);
+    stateManager.setState({ data: { ...state.data, folders } });
 
     api.deletePrompt({
       userId: state.user.id,
@@ -460,7 +476,7 @@ const engine = {
     }
 
     const state = stateManager.getState();
-    const folder = state.data.folders[folderId];
+    const folder = stateManager.getFolderById(folderId);
     if (!folder) {
       this.showToast(TOAST_MESSAGES.exportError);
       return { success: false };
@@ -476,11 +492,10 @@ const engine = {
       },
       prompts: prompts.map(p => ({
         id: p.id,
-        folderId: p.folderId,
-        nome: p.nome,
-        conteudo: p.conteudo,
-        createdAt: p.createdAt,
-        updatedAt: p.updatedAt
+        name: p.nome,
+        content: p.conteudo,
+        created_at: new Date(p.createdAt).toISOString(),
+        updated_at: new Date(p.updatedAt).toISOString()
       }))
     };
 
@@ -506,66 +521,59 @@ const engine = {
 
     try {
       const importData = parseJSON(jsonText);
-      
-      if (!importData.folder || !importData.prompts || !Array.isArray(importData.prompts)) {
-        throw new Error('Formato inválido: esperado { folder: {...}, prompts: [...] }');
-      }
+
+      const normalizedImport = this.normalizeImportPayload(importData);
 
       const state = stateManager.getState();
-      const existingFolderIds = new Set(Object.keys(state.data.folders));
-      const existingPromptIds = new Set(Object.keys(state.data.prompts));
-      const existingFolderNames = Object.values(state.data.folders).map(f => f.name);
-      const existingPromptNames = Object.values(state.data.prompts).map(p => p.nome);
+      const existingFolderIds = new Set(state.data.folders.map(f => f.id));
+      const existingPromptIds = new Set(
+        state.data.folders.flatMap(folder => (folder.prompts || []).map(prompt => prompt.id))
+      );
+      const existingFolderNames = state.data.folders.map(f => f.name);
+      const existingPromptNames = state.data.folders.flatMap(folder => (folder.prompts || []).map(prompt => prompt.nome));
 
       // Generate new folder ID if duplicate
-      let newFolderId = importData.folder.id;
+      let newFolderId = normalizedImport.folder.id;
       if (existingFolderIds.has(newFolderId)) {
         newFolderId = generateUUID();
       }
 
       // Generate unique folder name
-      let newFolderName = generateUniqueName(importData.folder.name, existingFolderNames);
+      let newFolderName = generateUniqueName(normalizedImport.folder.name, existingFolderNames);
 
       const newFolder = {
         id: newFolderId,
         name: newFolderName,
-        createdAt: importData.folder.createdAt || Date.now(),
-        updatedAt: Date.now()
+        createdAt: this.toTimestamp(normalizedImport.folder.createdAt || normalizedImport.folder.created_at),
+        updatedAt: Date.now(),
+        prompts: []
       };
 
       // Process prompts
-      const newPrompts = { ...state.data.prompts };
-      const newFolderPrompts = { ...state.data.folderPrompts };
-      newFolderPrompts[newFolderId] = [];
-
-      importData.prompts.forEach(prompt => {
+      normalizedImport.prompts.forEach(prompt => {
         let newPromptId = prompt.id;
         if (existingPromptIds.has(newPromptId)) {
           newPromptId = generateUUID();
         }
 
-        let newPromptName = generateUniqueName(prompt.nome, existingPromptNames);
+        const promptName = prompt.nome || prompt.name || 'Sem nome';
+        let newPromptName = generateUniqueName(promptName, existingPromptNames);
         existingPromptNames.push(newPromptName);
 
         const newPrompt = {
           id: newPromptId,
-          folderId: newFolderId,
           nome: newPromptName,
-          conteudo: prompt.conteudo,
-          createdAt: prompt.createdAt || Date.now(),
+          conteudo: prompt.conteudo || prompt.content || '',
+          createdAt: this.toTimestamp(prompt.createdAt || prompt.created_at),
           updatedAt: Date.now()
         };
-
-        newPrompts[newPromptId] = newPrompt;
-        newFolderPrompts[newFolderId].push(newPromptId);
+        newFolder.prompts.push(newPrompt);
       });
 
       stateManager.setState({
         data: {
           ...state.data,
-          folders: { ...state.data.folders, [newFolderId]: newFolder },
-          prompts: newPrompts,
-          folderPrompts: newFolderPrompts
+          folders: [...state.data.folders, newFolder]
         }
       });
 
