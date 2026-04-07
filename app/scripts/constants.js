@@ -2,12 +2,24 @@
 // Constants
 // =========================
 
+// Constants application
+// =========================
 const GOD_KEY_TO_PREMIUM_ACTIVATE = 'Kjajhist#@123';
 const FREE_MAX_PROMPTS = 5;
 const PREMIUM_LICENSE_DURATION_DAYS = 30;
 
+// Constants Supabase
+// =========================
+const SUPABASE_URL = 'https://qeqjpesoyopjytbavemk.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_dLUQNjv13qlf6vmXgqUNGQ_KAZuG0Qm';
+
+
+// Constants Sales Landing Page URL
+// =========================
 const SALES_LANDING_PAGE_URL = 'https://www.sample.com';
 
+// Documents IDs
+// =========================
 const DOM_IDS = {
   btnCreateFolder: '#btnCreateFolder',
   btnCreatePrompt: '#btnCreatePrompt',
@@ -27,6 +39,8 @@ const DOM_IDS = {
   mainContent: '#mainContent'
 };
 
+// Toast Messages
+// =========================
 const TOAST_MESSAGES = {
   folderCreated: 'Pasta criada com sucesso',
   folderUpdated: 'Pasta atualizada com sucesso',
