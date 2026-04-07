@@ -29,6 +29,28 @@
           "updated_at": "2026-01-10T14:20:01.000Z"
         }
       ]
+    },
+    {
+      "id": "9e0b7f92-0c6a-4d8c-b6c1-1b7a0c3d2f10",
+      "name": "Marketing",
+      "created_at": "2026-01-10T14:12:43.123Z",
+      "updated_at": "2026-01-10T14:12:43.123Z",
+      "prompts": [
+        {
+          "id": "3a4f2d1c-9b2a-4d77-9a91-0f1c5a4e7d11",
+          "name": "Crie uma propaganda",
+          "content": "Crie uma propaganda para o produto [produto] com o slogan [slogan].",
+          "created_at": "2026-01-10T14:20:01.000Z",
+          "updated_at": "2026-01-10T14:20:01.000Z"
+        },
+        {
+          "id": "4a4f2d1c-9b2a-4d77-9a91-0f1c5a4e7d11",
+          "name": "Crie uma postagem para as redes sociais",
+          "content": "Crie uma postagem para as redes sociais para o produto [produto] com o slogan [slogan].",
+          "created_at": "2026-01-10T14:20:01.000Z",
+          "updated_at": "2026-01-10T14:20:01.000Z"
+        }
+      ]
     }
   ]
 }
