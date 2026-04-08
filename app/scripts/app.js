@@ -4,6 +4,13 @@
 
 const app = {
   async init() {
+    await api.ensureAccessTokenKey();
+    const token = await api.getAccessToken();
+    if (!token) {
+      window.location.href = AUTH_PAGE_PATH;
+      return;
+    }
+
     // Initialize renderer subscription
     renderer.initialize();
 
@@ -20,6 +27,7 @@ const app = {
     const btnCreatePrompt = document.querySelector(DOM_IDS.btnCreatePrompt);
     const btnLicenseKey = document.querySelector(DOM_IDS.btnLicenseKey);
     const btnImportFolder = document.querySelector(DOM_IDS.btnImportFolder);
+    const btnLogout = document.querySelector(DOM_IDS.btnLogout);
 
     if (btnCreateFolder) {
       btnCreateFolder.addEventListener('click', () => {
@@ -54,6 +62,13 @@ const app = {
           return;
         }
         engine.openDialog('importDialog');
+      });
+    }
+
+    if (btnLogout) {
+      btnLogout.addEventListener('click', async () => {
+        await api.clearAccessToken();
+        window.location.href = AUTH_PAGE_PATH;
       });
     }
 

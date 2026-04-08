@@ -118,6 +118,27 @@ body {
   color: var(--color-text);
 }
 
+.header__session {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.logout-text-button {
+  border: none;
+  background: transparent;
+  color: var(--color-text-light);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.logout-text-button:hover {
+  color: var(--color-text);
+}
+
 /* =========================
    Main Content
    ========================= */

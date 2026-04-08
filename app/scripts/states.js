@@ -5,7 +5,8 @@
 const createStateManager = () => {
   let state = {
     user: {
-      id: 'user-1',
+      id: null,
+      name: null,
       plan: 'free',
       licenseKey: null,
       licenseExpiry: null,

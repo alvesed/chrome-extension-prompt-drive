@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptDrive - Login</title>
+  <link rel="stylesheet" href="app/styles/main.css">
+  <link rel="stylesheet" href="app/styles/components/buttons.css">
+  <link rel="stylesheet" href="app/styles/components/forms.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__left">
+      <div class="header__left-top">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div>
+          <h1 class="header__title">PromptDrive</h1>
+          <p class="header__slogan">Acesse sua conta</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="folders-container" style="max-width: 720px; margin: 0 auto;">
+      <section id="loginSection" class="dialog__content" style="margin-bottom: 16px;">
+        <h2 class="dialog__title">Login</h2>
+        <form id="loginForm" class="dialog__form">
+          <div class="form-group">
+            <label for="loginEmail" class="form-label">E-mail</label>
+            <input id="loginEmail" name="email" type="email" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword" class="form-label">Senha</label>
+            <input id="loginPassword" name="password" type="password" class="form-input" required />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary">Entrar</button>
+          </div>
+          <div class="form-actions">
+            <button id="btnShowSignup" type="button" class="btn btn--secondary">Criar nova conta</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="signupSection" class="dialog__content" style="display: none;">
+        <h2 class="dialog__title">Criar Nova Conta</h2>
+        <form id="signupForm" class="dialog__form">
+          <div class="form-group">
+            <label for="signupName" class="form-label">Nome</label>
+            <input id="signupName" name="name" type="text" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label for="signupEmail" class="form-label">E-mail</label>
+            <input id="signupEmail" name="email" type="email" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label for="signupPassword" class="form-label">Senha</label>
+            <input id="signupPassword" name="password" type="password" class="form-input" required />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn--secondary">Criar nova conta</button>
+          </div>
+          <div class="form-actions">
+            <button id="btnBackToLogin" type="button" class="btn btn--primary">Voltar para login</button>
+          </div>
+          <p id="authRedirectingMessage" style="display: none; margin-top: 8px; color: var(--color-text-secondary);">
+            Redirecionando para o login...
+          </p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app/scripts/constants.js"></script>
+  <script src="app/scripts/service.js"></script>
+  <script src="app/scripts/api.js"></script>
+  <script src="app/scripts/auth.js"></script>
+</body>
+</html>

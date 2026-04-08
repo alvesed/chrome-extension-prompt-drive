@@ -12,6 +12,9 @@ const PREMIUM_LICENSE_DURATION_DAYS = 30;
 // =========================
 const SUPABASE_URL = 'https://qeqjpesoyopjytbavemk.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_dLUQNjv13qlf6vmXgqUNGQ_KAZuG0Qm';
+const USER_ACCESS_TOKEN_KEY = 'USER_ACCESS_TOKEN';
+const AUTH_PAGE_PATH = 'auth.html';
+const APP_PAGE_PATH = 'index.html';
 
 
 // Constants Sales Landing Page URL
@@ -25,6 +28,7 @@ const DOM_IDS = {
   btnCreatePrompt: '#btnCreatePrompt',
   btnLicenseKey: '#btnLicenseKey',
   btnImportFolder: '#btnImportFolder',
+  btnLogout: '#btnLogout',
   promptCounter: '#promptCounter',
   userPlanBadge: '#userPlanBadge',
   folderDialog: '#folderDialog',

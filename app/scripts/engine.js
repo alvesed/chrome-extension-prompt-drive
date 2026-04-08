@@ -15,8 +15,13 @@ const engine = {
     stateManager.setState({ ui: { ...stateManager.getState().ui, loading: true } });
 
     try {
-      const seedData = await this.loadSeedData();
-      const normalized = this.normalizeSeedData(seedData);
+      const remoteData = await api.loadCurrentUserData();
+      if (!remoteData) {
+        await api.clearAccessToken();
+        window.location.href = AUTH_PAGE_PATH;
+        return;
+      }
+      const normalized = this.normalizeSeedData(remoteData);
       const state = stateManager.getState();
 
       stateManager.setState({
@@ -29,9 +34,11 @@ const engine = {
       });
     } catch (error) {
       console.error('Error initializing:', error);
+      await api.clearAccessToken();
       stateManager.setState({
         ui: { ...stateManager.getState().ui, loading: false, error: { message: error.message } }
       });
+      window.location.href = AUTH_PAGE_PATH;
     }
   },
 
