@@ -2,28 +2,66 @@
 // Constants
 // =========================
 
-// Constants application
-// =========================
-const GOD_KEY_TO_PREMIUM_ACTIVATE = 'Kjajhist#@123';
+// Constants Application
+// ====================================================
 const FREE_MAX_PROMPTS = 5;
 const PREMIUM_LICENSE_DURATION_DAYS = 30;
 
 // Constants Supabase
-// =========================
+// ====================================================
 const SUPABASE_URL = 'https://qeqjpesoyopjytbavemk.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_dLUQNjv13qlf6vmXgqUNGQ_KAZuG0Qm';
-const USER_ACCESS_TOKEN_KEY = 'USER_ACCESS_TOKEN';
-const AUTH_PAGE_PATH = 'auth.html';
-const APP_PAGE_PATH = 'index.html';
 
 
 // Constants Sales Landing Page URL
-// =========================
+// ====================================================
 const SALES_LANDING_PAGE_URL = 'https://www.sample.com';
 
-// Documents IDs
-// =========================
+// Stripe Checkout (Payment Link)
+// ====================================================
+const STRIPE_CHECKOUT_BASE = 'https://buy.stripe.com/test_3cI8wR9h0c2haF9cWM4sE00';
+
+// Plans (Free vs Pro) - used in modal
+// ====================================================
+const PLANS = {
+  free: {
+    name: 'Free',
+    features: [
+      { text: 'Limite de até 5 prompts', included: true },
+      { text: 'Importar Pastas', included: false },
+      { text: 'Exportar pastas', included: false }
+    ]
+  },
+  pro: {
+    name: 'Pro',
+    features: [
+      { text: 'Prompts ilimitados', included: true },
+      { text: 'Importar Pastas', included: true },
+      { text: 'Exportar pastas', included: true }
+    ],
+    ctaLabel: 'Garantir Premium Agora!'
+  }
+};
+
+// Constants Storage Keys
+// ====================================================
+const STORAGE_KEY_ACCESS_TOKEN = 'USER_ACCESS_TOKEN';
+
+
+// Constants Documents IDS
+// ====================================================
 const DOM_IDS = {
+  // Auth
+  authScreen: '#authScreen',
+  appScreen: '#appScreen',
+  loginView: '#loginView',
+  signupView: '#signupView',
+  redirectingView: '#redirectingView',
+  loginForm: '#loginForm',
+  signupForm: '#signupForm',
+  btnShowSignup: '#btnShowSignup',
+  btnShowLogin: '#btnShowLogin',
+  // App
   btnCreateFolder: '#btnCreateFolder',
   btnCreatePrompt: '#btnCreatePrompt',
   btnLicenseKey: '#btnLicenseKey',
@@ -43,23 +81,39 @@ const DOM_IDS = {
   mainContent: '#mainContent'
 };
 
-// Toast Messages
-// =========================
+// Constants Toasts
+// ====================================================
 const TOAST_MESSAGES = {
+  // Auth
+  loginSuccess: 'Login realizado com sucesso',
+  loginError: 'E-mail ou senha inválidos',
+  signupSuccess: 'Conta criada com sucesso! Faça login para continuar',
+  signupError: 'Erro ao criar conta',
+  authError: 'Erro de autenticação',
+  sessionExpired: 'Sessão expirada. Faça login novamente',
+  // Folders
   folderCreated: 'Pasta criada com sucesso',
   folderUpdated: 'Pasta atualizada com sucesso',
   folderError: 'Erro ao criar pasta',
+  folderDeleted: 'Pasta removida com sucesso',
+  folderDeleteError: 'Erro ao remover pasta',
+  folderNameMismatch: 'O nome digitado não confere com o nome da pasta',
+  folderDuplicateName: 'Já existe uma pasta com esse nome',
+  // Prompts
   promptCreated: 'Prompt criado com sucesso',
   promptUpdated: 'Prompt atualizado com sucesso',
   promptDeleted: 'Prompt removido com sucesso',
   promptError: 'Erro ao processar prompt',
-  folderDeleted: 'Pasta removida com sucesso',
-  folderDeleteError: 'Erro ao remover pasta',
-  folderNameMismatch: 'O nome digitado não confere com o nome da pasta',
+  promptDuplicateName: 'Já existe um prompt com esse nome nesta pasta',
+  promptFolderError: 'A pasta selecionada não pertence ao seu usuário',
+  // Limits
   limitReached: 'Limite do plano Free atingido (5 prompts)',
   premiumActivated: 'Premium ativado até',
   invalidKey: 'Chave inválida',
+  alreadyPremium: 'Você já é premium',
   premiumFeature: 'Recurso Premium - Ative o Premium para usar esta funcionalidade',
+  redirectingToCheckout: 'Redirecionando ao checkout...',
+  // Share/Export/Import
   shareSuccess: 'Prompt copiado para a área de transferência!',
   shareError: 'Falha ao compartilhar prompt',
   exportSuccess: 'Pasta exportada com sucesso!',

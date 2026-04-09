@@ -2,9 +2,18 @@
   "manifest_version": 3,
   "name": "Prompt DRIVE",
   "version": "1.0.0",
-  "description": "Gerenciador de prompts para Chrome",
-  "permissions": ["sidePanel", "activeTab", "scripting", "tabs", "storage"],
-  "host_permissions": ["https://www.sample.com/*"],
+  "description": "Gerenciador de universal de prompts para ferramentas de IA.",
+  "homepage_url": "https://github.com/felipeAguiarCode/chrome-extension-prompt-drive",
+  "icons": {
+    "16": "ext/icons/16_favicon.png",
+    "32": "ext/icons/32_display.png",
+    "48": "ext/icons/48_chromeextensions.png",
+    "128": "ext/icons/128_webstore.png"
+  },
+  "permissions": ["sidePanel", "tabs", "storage"],
+  "host_permissions": [
+    "https://etzlgzpyshwdijyucsog.supabase.co/*"
+  ],
   "background": {
     "service_worker": "ext/worker.js"
   },
@@ -12,6 +21,12 @@
     "default_path": "index.html"
   },
   "action": {
-    "default_title": "Abrir Prompt DRIVE"
+    "default_title": "Abrir Prompt DRIVE",
+    "default_icon": {
+      "16": "ext/icons/16_favicon.png",
+      "32": "ext/icons/32_display.png",
+      "48": "ext/icons/48_chromeextensions.png",
+      "128": "ext/icons/128_webstore.png"
+    }
   }
 }

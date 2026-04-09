@@ -4,7 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PromptDrive</title>
+  <title>Prompt Drive</title>
+  <link rel="icon" type="image/png" href="ext/icons/16_favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="app/styles/main.css">
   <link rel="stylesheet" href="app/styles/components/buttons.css">
   <link rel="stylesheet" href="app/styles/components/badge.css">
@@ -12,89 +15,159 @@
   <link rel="stylesheet" href="app/styles/components/prompt.css">
   <link rel="stylesheet" href="app/styles/components/dialogs.css">
   <link rel="stylesheet" href="app/styles/components/forms.css">
+  <link rel="stylesheet" href="app/styles/components/auth.css">
   <link rel="stylesheet" href="app/styles/responsive.css">
 </head>
 
 <body>
   <!-- =========================
-      Header
+      Auth Screen
   ========================= -->
-  <header class="header">
-    <div class="header__left">
-      <div class="header__left-top">
+  <section id="authScreen" class="auth-container" style="display: none;">
+    <!-- Login View -->
+    <div id="loginView" class="auth-card">
+      <div class="auth-header">
         <div class="logo">
+          <img src="ext/icons/16_favicon.png" alt="Prompt Drive">
+        </div>
+        <h1>Prompt Drive</h1>
+        <p>Organize seus prompts</p>
+      </div>
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="loginEmail" class="form-label">E-mail</label>
+          <input type="email" id="loginEmail" name="email" class="form-input" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">Senha</label>
+          <input type="password" id="loginPassword" name="password" class="form-input" required>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary btn--full">Entrar</button>
+        </div>
+      </form>
+      <div class="auth-footer">
+        <button type="button" id="btnShowSignup" class="auth-link">Criar nova conta</button>
+      </div>
+    </div>
+
+    <!-- Signup View -->
+    <div id="signupView" class="auth-card" style="display: none;">
+      <div class="auth-header">
+        <div class="logo">
+          <img src="ext/icons/16_favicon.png" alt="Prompt Drive">
+        </div>
+        <h1>Criar Conta</h1>
+        <p>Junte-se ao PromptDrive</p>
+      </div>
+      <form id="signupForm" class="auth-form">
+        <div class="form-group">
+          <label for="signupName" class="form-label">Nome</label>
+          <input type="text" id="signupName" name="name" class="form-input" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="signupEmail" class="form-label">E-mail</label>
+          <input type="email" id="signupEmail" name="email" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="signupPassword" class="form-label">Senha</label>
+          <input type="password" id="signupPassword" name="password" class="form-input" required minlength="6">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary btn--full">Criar conta</button>
+        </div>
+      </form>
+      <div class="auth-footer">
+        <button type="button" id="btnShowLogin" class="auth-link">Voltar ao login</button>
+      </div>
+    </div>
+
+    <!-- Redirecting View -->
+    <div id="redirectingView" class="auth-card auth-card--redirecting" style="display: none;">
+      <div class="spinner"></div>
+      <p>Redirecionando...</p>
+    </div>
+  </section>
+
+  <!-- =========================
+      App Screen
+  ========================= -->
+  <div id="appScreen" style="display: none;">
+    <!-- =========================
+        Header
+    ========================= -->
+    <header class="header">
+      <div class="header__left">
+        <div class="header__left-top">
+          <div class="logo">
+            <img src="ext/icons/negative_icon.svg" alt="Prompt Drive">
+          </div>
+          <div>
+            <h1 class="header__title">Prompt Drive</h1>
+            <p class="header__slogan">Organize seus prompts</p>
+          </div>
+        </div>
+      </div>
+      <div class="header__right">
+        <button id="btnCreateFolder" class="btn btn--icon" title="Nova pasta" aria-label="Criar nova pasta">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round">
-            <path
-              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-            </path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            <line x1="12" y1="11" x2="12" y2="17"></line>
+            <line x1="9" y1="14" x2="15" y2="14"></line>
           </svg>
-        </div>
-        <div>
-          <h1 class="header__title">PromptDrive</h1>
-          <p class="header__slogan">Organize seus prompts</p>
-        </div>
-      </div>
-    </div>
-    <div class="header__right">
-      <button id="btnCreateFolder" class="btn btn--icon" title="Nova pasta" aria-label="Criar nova pasta">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-          <line x1="12" y1="11" x2="12" y2="17"></line>
-          <line x1="9" y1="14" x2="15" y2="14"></line>
-        </svg>
-        <span>Nova pasta</span>
-      </button>
-      <button id="btnCreatePrompt" class="btn btn--primary" title="Novo prompt" aria-label="Criar novo prompt">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        <span>Novo prompt</span>
-      </button>
-      <button id="btnImportFolder" class="btn btn--icon" title="Importar pasta" aria-label="Importar pasta"
-        style="display: none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-        <span>Importar</span>
-      </button>
-      <button id="btnLicenseKey" class="btn btn--icon btn--key" title="Serial Key" aria-label="Ativar Premium">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-      </button>
-      <div class="header__session">
+          <span>Nova pasta</span>
+        </button>
+        <button id="btnCreatePrompt" class="btn btn--primary" title="Novo prompt" aria-label="Criar novo prompt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Novo prompt</span>
+        </button>
+        <button id="btnImportFolder" class="btn btn--icon" title="Importar pasta" aria-label="Importar pasta"
+          style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Importar</span>
+        </button>
         <span id="promptCounter" class="header__counter">0 / 5</span>
-        <button id="btnLogout" class="logout-text-button" type="button">Sair</button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- =========================
-      Main Content
-  ========================= -->
-  <main id="mainContent" class="main-content">
-    <div id="foldersContainer" class="folders-container">
-      <!-- Folders and prompts will be rendered here -->
-    </div>
-  </main>
+    <!-- =========================
+        Main Content
+    ========================= -->
+    <main id="mainContent" class="main-content">
+      <div id="foldersContainer" class="folders-container">
+        <!-- Folders and prompts will be rendered here -->
+      </div>
+    </main>
 
-  <!-- =========================
-      Footer
-  ========================= -->
-  <footer class="footer">
-    <span id="userPlanBadge" class="plan-badge plan-badge--free">Plano Gratuito</span>
-  </footer>
+    <!-- =========================
+        Footer
+    ========================= -->
+    <footer class="footer">
+      <span id="userPlanBadge" class="plan-badge plan-badge--free">Plano Gratuito</span>
+      <div class="footer__actions">
+        <button id="btnLicenseKey" class="btn btn--icon btn--key" title="Planos" aria-label="Ver planos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M12 12v8"></path>
+            <path d="M8 20h8"></path>
+            <path d="M10 16h4"></path>
+          </svg>
+        </button>
+        <button id="btnLogout" class="btn btn--text" title="Sair" aria-label="Fazer logout">Sair</button>
+      </div>
+    </footer>
+  </div>
 
   <!-- =========================
       Dialogs
@@ -239,21 +312,15 @@
     </div>
   </div>
 
-  <!-- License Dialog -->
+  <!-- Plans Dialog (Free vs Pro) -->
   <div id="licenseDialog" class="dialog" role="dialog" aria-hidden="true" aria-labelledby="licenseDialogTitle">
     <div class="dialog__overlay"></div>
-    <div class="dialog__content">
-      <h2 id="licenseDialogTitle" class="dialog__title">Ativar Premium</h2>
-      <form id="licenseForm" class="dialog__form">
-        <div class="form-group">
-          <label for="licenseKey" class="form-label">Chave de Licença</label>
-          <input type="text" id="licenseKey" name="licenseKey" class="form-input" required autofocus>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn--secondary" data-action="close-dialog">Cancelar</button>
-          <button type="submit" class="btn btn--primary">Ativar</button>
-        </div>
-      </form>
+    <div class="dialog__content dialog__content--plans">
+      <h2 id="licenseDialogTitle" class="dialog__title">Planos</h2>
+      <div class="plans-comparison" id="plansContainer"></div>
+      <div class="form-actions form-actions--end">
+        <button type="button" class="btn btn--secondary" data-action="close-dialog">Fechar</button>
+      </div>
     </div>
   </div>
 
@@ -277,12 +344,19 @@
   </div>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app/scripts/constants.js"></script>
   <script src="app/scripts/states.js"></script>
-  <script src="app/scripts/service.js"></script>
-  <script src="app/scripts/api.js"></script>
-  <script src="app/scripts/engine.js"></script>
+  <script src="app/scripts/utils.js"></script>
+  <script src="app/api/api-core.js"></script>
+  <script src="app/api/api-auth.js"></script>
+  <script src="app/api/api-folders.js"></script>
+  <script src="app/api/api-prompts.js"></script>
+  <script src="app/api/api-license.js"></script>
+  <script src="app/core/engine-core.js"></script>
+  <script src="app/core/engine-dialogs.js"></script>
+  <script src="app/core/engine-folders.js"></script>
+  <script src="app/core/engine-prompts.js"></script>
+  <script src="app/core/engine-license.js"></script>
   <script src="app/scripts/render.js"></script>
   <script src="app/scripts/app.js"></script>
 </body>

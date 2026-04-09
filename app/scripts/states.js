@@ -5,11 +5,9 @@
 const createStateManager = () => {
   let state = {
     user: {
-      id: null,
+      id: 'user-1',
       name: null,
       plan: 'free',
-      licenseKey: null,
-      licenseExpiry: null,
       createdAt: Date.now(),
       updatedAt: Date.now()
     },
@@ -33,7 +31,9 @@ const createStateManager = () => {
       currentDeletingFolderId: null
     },
     data: {
-      folders: []
+      folders: {},
+      prompts: {},
+      folderPrompts: {}
     }
   };
 
@@ -66,29 +66,23 @@ const createStateManager = () => {
 
   // Selectors / Derived State
   const getPromptCountTotal = () => {
-    return state.data.folders.reduce((total, folder) => {
-      return total + (folder.prompts?.length || 0);
-    }, 0);
+    return Object.keys(state.data.prompts).length;
   };
 
   const getPromptsByFolder = (folderId) => {
-    const folder = state.data.folders.find(item => item.id === folderId);
-    if (!folder) return [];
-    return [...(folder.prompts || [])].sort((a, b) => a.nome.localeCompare(b.nome));
+    const promptIds = state.data.folderPrompts[folderId] || [];
+    return promptIds
+      .map(id => state.data.prompts[id])
+      .filter(Boolean)
+      .sort((a, b) => (a.name ?? a.nome).localeCompare(b.name ?? b.nome));
   };
 
   const getFolderById = (folderId) => {
-    return state.data.folders.find(item => item.id === folderId) || null;
+    return state.data.folders[folderId] || null;
   };
 
   const getPromptById = (promptId) => {
-    for (const folder of state.data.folders) {
-      const prompt = (folder.prompts || []).find(item => item.id === promptId);
-      if (prompt) {
-        return { ...prompt, folderId: folder.id };
-      }
-    }
-    return null;
+    return state.data.prompts[promptId] || null;
   };
 
   const isFreePlan = () => {

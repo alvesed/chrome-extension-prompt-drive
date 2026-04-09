@@ -1,7 +1,7 @@
 {
   "user": {
     "id": "c1f9e6c2-3c1d-4e1a-b0b2-8b7c0f5a9d21",
-    "name": "Joao Silva"
+    "name": "João Silva"
   },
   "profile": {
     "stripe_customer_id": "cus_Q8fKJd9s73Lx2A",
@@ -17,38 +17,38 @@
   "folders": [
     {
       "id": "8e0b7f92-0c6a-4d8c-b6c1-1b7a0c3d2f10",
-      "name": "Trabalho",
+      "name": "MarketingShare",
       "created_at": "2026-01-10T14:12:43.123Z",
       "updated_at": "2026-01-10T14:12:43.123Z",
       "prompts": [
         {
           "id": "3a4f2d1c-9b2a-4d77-9a91-0f1c5a4e7d11",
-          "name": "Resumo de reuniao",
-          "content": "Crie um resumo objetivo da reuniao a partir das anotacoes abaixo...",
+          "name": "Resumo de reunião",
+          "content": "Crie um resumo objetivo da reunião a partir das anotações abaixo...",
           "created_at": "2026-01-10T14:20:01.000Z",
           "updated_at": "2026-01-10T14:20:01.000Z"
         }
       ]
     },
     {
-      "id": "9e0b7f92-0c6a-4d8c-b6c1-1b7a0c3d2f10",
+      "id": "9f1c8g03-1d7b-5f9d-c7d2-2c8b1g6b0e32",
       "name": "Marketing",
-      "created_at": "2026-01-10T14:12:43.123Z",
-      "updated_at": "2026-01-10T14:12:43.123Z",
+      "created_at": "2026-01-10T14:15:00.000Z",
+      "updated_at": "2026-01-10T14:15:00.000Z",
       "prompts": [
         {
-          "id": "3a4f2d1c-9b2a-4d77-9a91-0f1c5a4e7d11",
-          "name": "Crie uma propaganda",
-          "content": "Crie uma propaganda para o produto [produto] com o slogan [slogan].",
-          "created_at": "2026-01-10T14:20:01.000Z",
-          "updated_at": "2026-01-10T14:20:01.000Z"
+          "id": "4b5g3e2d-0a3b-5e88-0b02-1g2d6b5f8e22",
+          "name": "Post para Redes Sociais",
+          "content": "Crie um post engajador para [plataforma] sobre [tema]. Inclua uma chamada para ação clara e use uma linguagem [tom].",
+          "created_at": "2026-01-10T14:20:02.000Z",
+          "updated_at": "2026-01-10T14:20:02.000Z"
         },
         {
-          "id": "4a4f2d1c-9b2a-4d77-9a91-0f1c5a4e7d11",
-          "name": "Crie uma postagem para as redes sociais",
-          "content": "Crie uma postagem para as redes sociais para o produto [produto] com o slogan [slogan].",
-          "created_at": "2026-01-10T14:20:01.000Z",
-          "updated_at": "2026-01-10T14:20:01.000Z"
+          "id": "5c6h4f3e-1b4c-6f99-1c13-2h3e7c6g9f33",
+          "name": "Email Marketing",
+          "content": "Escreva um email de marketing para promover [produto/serviço]. O email deve ser persuasivo, mas não agressivo, e destacar os principais benefícios.",
+          "created_at": "2026-01-10T14:20:03.000Z",
+          "updated_at": "2026-01-10T14:20:03.000Z"
         }
       ]
     }

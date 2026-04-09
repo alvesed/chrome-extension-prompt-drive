@@ -4,9 +4,41 @@
 
 const renderer = {
   initialize() {
-    // Subscribe to state changes
+    this.populatePlansDialog();
     stateManager.subscribe((state) => {
       this.render(state);
+    });
+  },
+
+  populatePlansDialog() {
+    const container = document.querySelector('#plansContainer');
+    if (!container) return;
+    container.innerHTML = '';
+    Object.entries(PLANS).forEach(([key, plan]) => {
+      const card = document.createElement('div');
+      card.className = `plan-card plan-card--${key}`;
+      const nameEl = document.createElement('h3');
+      nameEl.className = 'plan-card__name';
+      nameEl.textContent = plan.name;
+      card.appendChild(nameEl);
+      const list = document.createElement('ul');
+      list.className = 'plan-card__features';
+      plan.features.forEach(({ text, included }) => {
+        const li = document.createElement('li');
+        li.className = `plan-card__feature plan-card__feature--${included ? 'included' : 'excluded'}`;
+        li.textContent = text;
+        list.appendChild(li);
+      });
+      card.appendChild(list);
+      if (plan.ctaLabel) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'btnStripeCheckout';
+        btn.className = 'btn btn--primary plan-card__cta';
+        btn.textContent = plan.ctaLabel;
+        card.appendChild(btn);
+      }
+      container.appendChild(card);
     });
   },
 
@@ -44,12 +76,14 @@ const renderer = {
         licenseBtn.title = 'Premium Ativo';
       } else {
         licenseBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M12 12v8"></path>
+          <path d="M8 20h8"></path>
+          <path d="M10 16h4"></path>
         </svg>`;
         licenseBtn.classList.add('btn--key');
         licenseBtn.classList.remove('btn--premium-status');
-        licenseBtn.title = 'Serial Key';
+        licenseBtn.title = 'Planos';
       }
     }
   },
@@ -77,7 +111,7 @@ const renderer = {
       return;
     }
 
-    const folders = state.data.folders;
+    const folders = Object.values(state.data.folders);
     
     if (folders.length === 0) {
       container.innerHTML = '<div class="empty-state"><p>Nenhuma pasta encontrada. Crie sua primeira pasta!</p></div>';
@@ -129,9 +163,10 @@ const renderer = {
   },
 
   renderPrompt(prompt, state) {
-    const preview = prompt.conteudo.length > 100 
-      ? prompt.conteudo.substring(0, 100) + '...'
-      : prompt.conteudo;
+    const content = prompt.content ?? prompt.conteudo ?? '';
+    const preview = content.length > 100 
+      ? content.substring(0, 100) + '...'
+      : content;
     
     // Limit preview to 2 lines
     const previewLines = preview.split('\n').slice(0, 2).join('\n');
@@ -139,7 +174,7 @@ const renderer = {
     return `
       <div class="prompt-item" data-prompt-id="${prompt.id}">
         <div class="prompt-item__info">
-          <h4 class="prompt-item__name">${this.escapeHtml(prompt.nome)}</h4>
+          <h4 class="prompt-item__name">${this.escapeHtml(prompt.name ?? prompt.nome)}</h4>
           <p class="prompt-item__preview">${this.escapeHtml(previewLines)}</p>
         </div>
         <div class="prompt-item__actions">
@@ -318,7 +353,7 @@ const renderer = {
       while (folderSelect.options.length > 1) {
         folderSelect.remove(1);
       }
-      const folders = state.data.folders;
+      const folders = Object.values(state.data.folders);
       folders.forEach(folder => {
         const option = document.createElement('option');
         option.value = folder.id;
@@ -332,10 +367,10 @@ const renderer = {
     const conteudoTextarea = document.querySelector('#promptEditDialog textarea[name="conteudo"]');
 
     if (nomeInput) {
-      nomeInput.value = prompt.nome;
+      nomeInput.value = prompt.name ?? prompt.nome;
     }
     if (conteudoTextarea) {
-      conteudoTextarea.value = prompt.conteudo;
+      conteudoTextarea.value = prompt.content ?? prompt.conteudo;
     }
   },
 
